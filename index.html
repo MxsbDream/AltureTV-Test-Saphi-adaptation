@@ -48,8 +48,8 @@
         </div>
       </div>
 
-      <!-- Carte émission -->
-      <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openPlayer('Novo19 direct test', 'video')">
+      <!-- Carte émission Novo19 (avec iframe pour la chaîne TV) -->
+      <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openNovo19()">
         <img src="img/logo.png" alt="Novo19" class="w-full h-40 object-cover" />
         <div class="p-4">
           <h2 class="text-xl font-semibold">Novo19</h2>
@@ -63,7 +63,7 @@
     </div>
   </section>
 
-  <!-- Player modal -->
+  <!-- Player modal (pour les vidéos MP4) -->
   <div id="playerModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closePlayer()" class="absolute top-2 right-4 text-white text-2xl">×</button>
@@ -72,6 +72,17 @@
         <source src="" type="video/mp4" />
         Votre navigateur ne prend pas en charge la lecture vidéo.
       </video>
+    </div>
+  </div>
+
+  <!-- Player modal spécifique pour Novo19 (iframe) -->
+  <div id="novo19Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
+    <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
+      <button onclick="closeNovo19()" class="absolute top-2 right-4 text-white text-2xl">×</button>
+      <h2 class="text-xl font-bold mb-4">Novo19 (Live)</h2>
+      <div class="w-full aspect-video">
+        <iframe src="https://novo19.ouest-france.fr/player/novo19" allowfullscreen frameborder="0" class="w-full h-96 rounded"></iframe>
+      </div>
     </div>
   </div>
 
@@ -93,6 +104,15 @@
       video.src = "";
       document.getElementById("playerModal").classList.add("hidden");
     }
+
+    // Fonctions pour la modale Novo19
+    function openNovo19() {
+      document.getElementById("novo19Modal").classList.remove("hidden");
+    }
+
+    function closeNovo19() {
+      document.getElementById("novo19Modal").classList.add("hidden");
+    }
   </script>
 </body>
-</html>
+      </html>
