@@ -41,16 +41,16 @@
 
       <!-- Carte émission -->
       <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openPlayer('Nom de l’émission', 'video.mp4')">
-        <img src="img/tf1-emission1.jpeg" alt="TF1" class="w-full h-40 object-cover" />
+        <img src="img/channels/tf1.jpeg" alt="TF1" class="w-full h-40 object-cover" />
         <div class="p-4">
-          <h2 class="text-xl font-semibold">Plus belle la vie encore plus belle</h2>
+          <h2 class="text-xl font-semibold">TF1</h2>
           <p class="text-sm text-gray-400">En Direct - TF1 | 14:00 - 15:00 | Téléfilm </p>
         </div>
       </div>
 
       <!-- Carte émission Novo19 (avec iframe pour la chaîne TV) -->
       <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openNovo19()">
-        <img src="img/logo.png" alt="Novo19" class="w-full h-40 object-cover" />
+        <img src="img/channels/novo19.jpeg" alt="Novo19" class="w-full h-40 object-cover" />
         <div class="p-4">
           <h2 class="text-xl font-semibold">Novo19</h2>
           <p class="text-sm text-gray-400">En Direct - Novo19 | Inconnu - Inconnu | Inconnu </p>
@@ -70,7 +70,7 @@
       <h2 id="playerTitle" class="text-xl font-bold mb-4">Titre</h2>
       <video id="playerVideo" controls class="w-full rounded">
         <source src="" type="video/mp4" />
-        Votre navigateur ne prend pas en charge la lecture vidéo.
+        Aucun droits pour lire la chaîne à été obtenu.
       </video>
     </div>
   </div>
@@ -79,7 +79,7 @@
   <div id="novo19Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closeNovo19()" class="absolute top-2 right-4 text-white text-2xl">×</button>
-      <h2 class="text-xl font-bold mb-4">Novo19 (Live)</h2>
+      <h2 class="text-xl font-bold mb-4">19 - Novo19</h2>
       <div class="w-full aspect-video">
         <iframe src="https://novo19.ouest-france.fr/player/novo19" allowfullscreen frameborder="0" class="w-full h-96 rounded"></iframe>
       </div>
