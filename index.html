@@ -58,6 +58,16 @@
       </div>
       
       <!-- Ajouter d'autres cartes ici -->
+      
+      <!-- Carte émission T18 (avec iframe pour la chaîne TV) -->
+      <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openT18()">
+        <img src="img/channels/t18.jpeg" alt="Logo T18" class="w-full h-40 object-cover" />
+        <div class="p-4">
+          <h2 class="text-xl font-semibold">Donnée EPG inconnue</h2>
+          <p class="text-sm text-gray-400">En Direct - T18 | Inconnu - Inconnu | Inconnu </p>
+        </div>
+      </div> 
+      
       <!-- ... -->
 
     </div>
@@ -79,6 +89,17 @@
   <div id="novo19Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closeNovo19()" class="absolute top-2 right-4 text-white text-2xl">×</button>
+      <h2 class="text-xl font-bold mb-4">818 - Test T18</h2>
+      <div class="w-full aspect-video">
+        <iframe src="https://novo19.ouest-france.fr/player/novo19" allowfullscreen frameborder="0" class="w-full h-96 rounded"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player modal spécifique pour T18 (iframe) -->
+  <div id="T18Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
+    <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
+      <button onclick="closeT18()" class="absolute top-2 right-4 text-white text-2xl">×</button>
       <h2 class="text-xl font-bold mb-4">19 - Novo19</h2>
       <div class="w-full aspect-video">
         <iframe src="https://novo19.ouest-france.fr/player/novo19" allowfullscreen frameborder="0" class="w-full h-96 rounded"></iframe>
