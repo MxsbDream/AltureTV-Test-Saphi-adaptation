@@ -39,14 +39,14 @@
     <h1 class="text-3xl font-bold mb-6">📺 Replay</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      <!-- Carte émission -->
-      <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openPlayer('Nom de l’émission', 'video.mp4')">
+      <!-- Carte émission TF1+ (ouvre un lien) -->
+      <a href="replay/tf1plus" target="_blank" rel="noopener noreferrer" class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer block">
         <img src="img/channels/tf1.jpeg" alt="TF1plus" class="w-full h-40 object-cover" />
         <div class="p-4">
           <h2 class="text-xl font-semibold">TF1+</h2>
-          <p class="text-sm text-gray-400">Voir le replay de toutes les chaînes du groupe TF1 avec TF1+</p>
+          <p class="text-sm text-gray-400">Voir les replays de toutes les chaînes du groupe TF1 avec TF1+</p>
         </div>
-      </div>
+      </a>
 
       <!-- Carte émission -->
       <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openPlayer('Nom de l’émission', 'video.mp4')">
@@ -95,4 +95,4 @@
     }
   </script>
 </body>
-      </html>
+</html>
