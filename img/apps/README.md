@@ -1,0 +1,1 @@
+## 🇫🇷/🇨🇦 = Informations sur les images du bouton "Services Alture" | 🇺🇸/🏴󠁧󠁢󠁥󠁮󠁧󠁿 = Informations about the "Alture Services" button images | 🇵🇹 = Informações sobre as imagens do botão "Alture Services" ##
