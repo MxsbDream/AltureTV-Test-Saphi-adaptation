@@ -48,6 +48,16 @@
         </div>
       </div>
 
+      <!-- Carte BFMTV -->
+      <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openBFMTV('Test de BFMTV', 'video.mp4')">
+        <img src="img/channels/tf1.png" alt="Logo BFMTV" class="w-full h-40 object-cover" />
+        <div class="p-4">
+          <h2 class="text-xl font-semibold">Donnée EPG inconnue</h2>
+          <p class="text-sm text-gray-400">En Direct - BFMTV | Inconnu - Inconnu | Inconnu </p>
+        </div>
+      </div>
+
+      <!--
       <!-- Carte émission Novo19 (avec iframe pour la chaîne TV) -->
       <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openNovo19()">
         <img src="img/channels/novo19.jpeg" alt="Logo Novo19" class="w-full h-40 object-cover" />
@@ -77,10 +87,20 @@
   <div id="playerModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closePlayer()" class="absolute top-2 right-4 text-white text-2xl">×</button>
-      <h2 id="playerTitle" class="text-xl font-bold mb-4">Titre</h2>
+      <h2 id="playerTitle" class="text-xl font-bold mb-4">0 - Aucun droit disponible pour cette chaîne</h2>
       <video id="playerVideo" controls class="w-full rounded">
         <source src="" type="video/mp4" />
-        Aucun droits pour lire la chaîne à été obtenu.
+      </video>
+    </div>
+  </div>
+
+    <!-- Player modal (pour les vidéos MP4) -->
+  <div id="bfmtvModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
+    <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
+      <button onclick="closeBFMTV()" class="absolute top-2 right-4 text-white text-2xl">×</button>
+      <h2 id="playerTitle" class="text-xl font-bold mb-4">13 - BFMTV</h2>
+      <video id="playerVideo" controls class="w-full rounded">
+        <source src="https://iptv-org.github.io/channels/fr/BFMTV" type="video/mp4" />
       </video>
     </div>
   </div>
@@ -123,6 +143,24 @@
       const video = document.getElementById("playerVideo");
       video.pause();
       video.src = "";
+      document.getElementById("playerModal").classList.add("hidden");
+    }
+// Modale BFMTV
+    function toggleMenu() {
+      const menu = document.getElementById("mobileMenu");
+      menu.classList.toggle("hidden");
+    }
+
+    function openBFMTV(titre, src) {
+      document.getElementById("playerTitle").textContent = titre;
+      document.getElementById("playerVideo").src = src;
+      document.getElementById("playerModal").classList.remove("hidden");
+    }
+
+    function closeBFMTV() {
+      const video = document.getElementById("playerVideo");
+      video.pause();
+      video.src = "https://iptv-org.github.io/channels/fr/BFMTV";
       document.getElementById("playerModal").classList.add("hidden");
     }
 
