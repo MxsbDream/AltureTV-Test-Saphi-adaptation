@@ -1,1 +1,469 @@
-Comming soon
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Erreur 433</title>
+  <style>
+    :root{
+      --bg:#06060a;
+      --card:#0f1115;
+      --glass: rgba(255,255,255,0.03);
+      --neon1: #7afcff;
+      --neon2: #ff5c8a;
+      --accent: #9b8cff;
+      --tv-border: #15171b;
+      --shadow: 0 10px 30px rgba(0,0,0,.6);
+      --screen-h: 180px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(1200px 400px at 10% 10%, rgba(155,140,255,0.06), transparent 6%),
+        radial-gradient(1000px 300px at 90% 90%, rgba(122,252,255,0.04), transparent 6%),
+        var(--bg);
+      color:#e9eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:40px;
+      display:flex;
+      flex-direction:column;
+      gap:28px;
+      align-items:center;
+      justify-content:flex-start;
+    }
+
+    header{
+      width:100%;
+      max-width:1100px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:1px;
+      color:var(--accent);
+      text-shadow: 0 2px 20px rgba(155,140,255,0.08);
+    }
+    p.lead{
+      margin:0;
+      color:#9aa6c2;
+      font-size:13px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn{
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--neon1);
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+      box-shadow: var(--shadow);
+      transition: transform .12s ease, opacity .12s;
+    }
+    .btn:hover{transform:translateY(-3px)}
+    .btn.secondary{
+      color:var(--neon2);
+      border-color: rgba(255,92,138,0.09);
+    }
+
+    /* Grid of TVs */
+    .grid{
+      width:100%;
+      max-width:1100px;
+      display:grid;
+      gap:24px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      align-items:start;
+    }
+
+    /* TV card */
+    .tv{
+      background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:18px;
+      border:1px solid var(--tv-border);
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:center;
+      position:relative;
+      overflow:visible;
+      transition: transform .18s ease, box-shadow .18s;
+    }
+    .tv:hover{ transform: translateY(-6px) scale(1.01) }
+
+    /* TV frame */
+    .frame{
+      width:100%;
+      max-width:320px;
+      height:var(--screen-h);
+      background: linear-gradient(180deg, #051022 0%, #08121b 50%, #02040a 100%);
+      border-radius:10px;
+      padding:12px;
+      box-shadow: inset 0 6px 18px rgba(0,0,0,0.6), 0 8px 30px rgba(0,0,0,0.6);
+      position:relative;
+      overflow:hidden;
+      border: 4px solid rgba(10,12,16,0.7);
+    }
+
+    /* small legs / knobs to make it look like tv */
+    .tv:after{
+      content:'';
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-12px;
+      width:110px;
+      height:12px;
+      background:linear-gradient(90deg, rgba(0,0,0,0.9), rgba(0,0,0,0.6));
+      border-radius:6px;
+      filter:blur(0.4px);
+    }
+    .tv:before{
+      content:'';
+      position:absolute;
+      right:14px;
+      top:12px;
+      width:10px;
+      height:10px;
+      background:linear-gradient(180deg,var(--neon1), var(--neon2));
+      border-radius:50%;
+      box-shadow: 0 0 18px rgba(122,252,255,0.16), 0 0 40px rgba(255,92,138,0.06);
+      opacity:.9;
+      transform:scale(.95);
+    }
+
+    /* Screen content - big 433 text */
+    .screen{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      isolation:isolate;
+      backface-visibility:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+    .screen .number{
+      font-weight:900;
+      font-size:84px;
+      letter-spacing:6px;
+      font-family: "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #e7f9ff;
+      position:relative;
+      z-index:5;
+      text-shadow:
+        0 2px 0 rgba(0,0,0,0.5),
+        0 8px 30px rgba(30,30,50,0.6),
+        0 0 30px rgba(122,252,255,0.06);
+      transform: translateZ(0);
+    }
+
+    /* Glitch effect: duplicate layers with clip and translate */
+    .number::before,
+    .number::after{
+      content:attr(data-text);
+      position:absolute;
+      left:0;
+      top:0;
+      width:100%;
+      height:100%;
+      color:var(--neon1);
+      mix-blend-mode:screen;
+      z-index:6;
+      pointer-events:none;
+    }
+    .number::before{
+      color:var(--neon1);
+      transform:translate(0px,0);
+      text-shadow: -2px 0 8px rgba(122,252,255,0.5);
+      clip-path:polygon(0 0,100% 0,100% 35%,0 30%);
+      animation:glitchTop 2.5s infinite linear;
+      opacity:.95;
+    }
+    .number::after{
+      color:var(--neon2);
+      transform:translate(0px,0);
+      text-shadow: 2px 0 8px rgba(255,92,138,0.45);
+      clip-path:polygon(0 65%,100% 70%,100% 100%,0 100%);
+      animation:glitchBottom 3s infinite linear;
+      opacity:.9;
+    }
+
+    /* fast jitter element (random slices) */
+    .glitch-slice{
+      position:absolute;
+      left:0;right:0;
+      height:10%;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05));
+      mix-blend-mode:overlay;
+      z-index:8;
+      pointer-events:none;
+      animation:scan .8s linear infinite;
+      opacity:.12;
+    }
+    .glitch-slice.s2{ top:22%; animation-duration:.7s; opacity:.06}
+    .glitch-slice.s3{ top:48%; animation-duration:1.4s; opacity:.08}
+    .glitch-slice.s4{ top:70%; animation-duration:.9s; opacity:.06}
+
+    /* subtle horizontal noise */
+    .scanlines::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+      background-size:100% 4px;
+      mix-blend-mode:overlay;
+      pointer-events:none;
+      opacity:.08;
+      z-index:9;
+    }
+
+    /* flicker */
+    .flicker{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+      mix-blend-mode:screen;
+      opacity:0.12;
+      animation:flick .9s infinite;
+      z-index:7;
+      pointer-events:none;
+    }
+
+    /* TV label under screen */
+    .label{
+      margin-top:6px;
+      font-size:13px;
+      color:#9fb6d9;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .badge{
+      background:linear-gradient(90deg,var(--neon1),var(--neon2));
+      color:#071723;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:12px;
+      letter-spacing:1px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    /* page center big logo */
+    .hero{
+      width:100%;
+      max-width:1100px;
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    /* animations */
+    @keyframes glitchTop{
+      0%{transform:translate(0,0); clip-path:polygon(0 0,100% 0,100% 35%,0 30%);}
+      10%{transform:translate(-6px,-3px);}
+      20%{transform:translate(3px,-2px);}
+      30%{transform:translate(-4px,2px); clip-path:polygon(0 0,100% 0,100% 25%,0 20%);}
+      40%{transform:translate(0,0);}
+      50%{transform:translate(6px,-2px);}
+      60%{transform:translate(-2px,1px);}
+      80%{transform:translate(0,0);}
+      100%{transform:translate(0,0);}
+    }
+    @keyframes glitchBottom{
+      0%{transform:translate(0,0); clip-path:polygon(0 65%,100% 70%,100% 100%,0 100%);}
+      10%{transform:translate(6px,3px);}
+      20%{transform:translate(-5px,2px);}
+      30%{transform:translate(4px,-3px); clip-path:polygon(0 70%,100% 75%,100% 100%,0 100%);}
+      40%{transform:translate(0,0);}
+      55%{transform:translate(-4px,2px)}
+      75%{transform:translate(0,0)}
+      100%{transform:translate(0,0)}
+    }
+    @keyframes scan{
+      0%{ transform:translateX(-3%); opacity:.06 }
+      50%{ transform:translateX(3%); opacity:.18 }
+      100%{ transform:translateX(-3%); opacity:.06 }
+    }
+    @keyframes flick{
+      0%{opacity:.08}
+      8%{opacity:.22}
+      12%{opacity:.05}
+      22%{opacity:.12}
+      40%{opacity:.04}
+      100%{opacity:.12}
+    }
+
+    /* Glitch intensity modifier */
+    .heavy .number{ filter:contrast(1.1)}
+    .heavy .number::before{ animation-duration:1.6s; clip-path:polygon(0 0,100% 0,100% 45%,0 40%); opacity:1}
+    .heavy .number::after{ animation-duration:1.8s; clip-path:polygon(0 60%,100% 65%,100% 100%,0 100%); opacity:1}
+    .heavy .glitch-slice{ opacity:.18; transform:translateZ(0) }
+    .heavy .flicker{ opacity:.22; animation-duration:.7s }
+
+    /* responsive */
+    @media (max-width:520px){
+      .number{font-size:56px}
+      :root{ --screen-h:140px }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div>
+      <h1>Erreur 433!</h1>
+      <p class="lead">Celon la base de données, cette page est en développement.</p>
+    </div>
+
+    <div class="controls">
+      <button id="toggleGlitch" class="btn">Activer glitch</button>
+      <button id="randomize" class="btn secondary">Lancer le détélé</button>
+    </div>
+  </header>
+
+  <main class="grid" id="tvGrid" aria-live="polite">
+    <!-- répéter plusieurs TVs -->
+    <div class="tv">
+      <div class="frame scanlines">
+        <div class="screen">
+          <div class="number" data-text="433">433</div>
+          <div class="glitch-slice s2"></div>
+          <div class="glitch-slice s3"></div>
+          <div class="glitch-slice s4"></div>
+          <div class="flicker"></div>
+        </div>
+      </div>
+      <div class="label"><span class="badge">433</span><span>inconnu</span></div>
+    </div>
+
+    <div class="tv">
+      <div class="frame scanlines">
+        <div class="screen">
+          <div class="number" data-text="433">433</div>
+          <div class="glitch-slice s2"></div>
+          <div class="glitch-slice s3"></div>
+          <div class="flicker"></div>
+        </div>
+      </div>
+      <div class="label"><span class="badge">433</span><span>TV — URBAN 433</span></div>
+    </div>
+
+    <div class="tv">
+      <div class="frame scanlines">
+        <div class="screen">
+          <div class="number" data-text="433">433</div>
+          <div class="glitch-slice s3"></div>
+          <div class="flicker"></div>
+        </div>
+      </div>
+      <div class="label"><span class="badge">433</span><span>TV — RETRO 433</span></div>
+    </div>
+
+    <div class="tv">
+      <div class="frame scanlines">
+        <div class="screen">
+          <div class="number" data-text="433">433</div>
+          <div class="glitch-slice s2"></div>
+          <div class="glitch-slice s4"></div>
+          <div class="flicker"></div>
+        </div>
+      </div>
+      <div class="label"><span class="badge">433</span><span>TV — NOISE 433</span></div>
+    </div>
+
+    <div class="tv">
+      <div class="frame scanlines">
+        <div class="screen">
+          <div class="number" data-text="433">433</div>
+          <div class="glitch-slice s4"></div>
+          <div class="flicker"></div>
+        </div>
+      </div>
+      <div class="label"><span class="badge">433</span><span>TV — LIVE 433</span></div>
+    </div>
+
+    <div class="tv">
+      <div class="frame scanlines">
+        <div class="screen">
+          <div class="number" data-text="433">433</div>
+          <div class="glitch-slice s2"></div>
+          <div class="glitch-slice s3"></div>
+          <div class="flicker"></div>
+        </div>
+      </div>
+      <div class="label"><span class="badge">433</span><span>TV — STUDIO 433</span></div>
+    </div>
+
+  </main>
+
+  <script>
+    // small interactive behaviors: toggle heavy glitch, randomize TV order
+    (function(){
+      const root = document.documentElement;
+      const tvGrid = document.getElementById('tvGrid');
+      const toggle = document.getElementById('toggleGlitch');
+      const rand = document.getElementById('randomize');
+
+      let heavy = false;
+      toggle.addEventListener('click', () => {
+        heavy = !heavy;
+        // toggle heavy class on body so we can intensify visuals
+        document.body.classList.toggle('heavy', heavy);
+        toggle.textContent = heavy ? 'Désactiver glitch intense' : 'Activer glitch intense';
+      });
+
+      rand.addEventListener('click', () => {
+        // randomize order of children
+        const nodes = Array.from(tvGrid.children);
+        for (let i = nodes.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [nodes[i], nodes[j]] = [nodes[j], nodes[i]];
+        }
+        // reattach
+        nodes.forEach(n => tvGrid.appendChild(n));
+        // add small shake to indicate change
+        tvGrid.animate([
+          { transform: 'translateY(0px)' },
+          { transform: 'translateY(-6px)' },
+          { transform: 'translateY(0px)' }
+        ], { duration: 320, easing:'ease-out' });
+      });
+
+      // small accessibility hint: allow keyboard toggle (Enter on focused button)
+      toggle.addEventListener('keyup', e => { if (e.key === 'Enter') toggle.click(); });
+      rand.addEventListener('keyup', e => { if (e.key === 'Enter') rand.click(); });
+
+      // subtle random glitches on load: vary animation durations slightly
+      document.querySelectorAll('.number').forEach((el, idx) => {
+        const t1 = 2 + Math.random()*1.5;
+        const t2 = 2.4 + Math.random()*1.8;
+        el.style.setProperty('--g1', t1 + 's');
+        el.style.setProperty('--g2', t2 + 's');
+      });
+
+    })();
+  </script>
+</body>
+  </html>
