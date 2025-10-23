@@ -57,6 +57,15 @@
         </div>
       </div>
 
+      <!-- Carte France 24 (sans iframe) -->
+      <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openFrance24()">
+        <img src="img/channels/france24.png" alt="Logo France 24" class="w-full h-40 object-cover" />
+        <div class="p-4">
+          <h2 class="text-xl font-semibold">France 24</h2>
+          <p class="text-sm text-gray-400">En Direct - France 24 | International | Actualités en continu</p>
+        </div>
+      </div>
+
       <!--
       <!-- Carte émission Novo19 (avec iframe pour la chaîne TV) -->
       <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openNovo19()">
@@ -94,12 +103,12 @@
     </div>
   </div>
 
-    <!-- Player modal (pour les vidéos MP4) -->
+  <!-- Player modal (pour les vidéos MP4) -->
   <div id="bfmtvModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closeBFMTV()" class="absolute top-2 right-4 text-white text-2xl">×</button>
-      <h2 id="playerTitle" class="text-xl font-bold mb-4">13 - BFMTV</h2>
-      <video id="playerVideo" controls class="w-full rounded">
+      <h2 class="text-xl font-bold mb-4">13 - BFMTV</h2>
+      <video id="bfmtvVideo" controls class="w-full rounded">
         <source src="https://iptv-org.github.io/channels/fr/BFMTV" type="video/mp4" />
       </video>
     </div>
@@ -127,6 +136,20 @@
     </div>
   </div>
 
+  <!-- Player modal spécifique pour France 24 (sans iframe, HLS via hls.js) -->
+  <div id="france24Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
+    <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
+      <button onclick="closeFrance24()" class="absolute top-2 right-4 text-white text-2xl">×</button>
+      <h2 id="france24Title" class="text-xl font-bold mb-4">France 24 - En direct</h2>
+      <div class="w-full aspect-video">
+        <video id="france24Video" controls class="w-full h-96 rounded bg-black"></video>
+      </div>
+    </div>
+  </div>
+
+  <!-- hls.js pour lire les flux HLS dans les navigateurs non compatibles -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
   <script>
     function toggleMenu() {
       const menu = document.getElementById("mobileMenu");
@@ -135,52 +158,102 @@
 
     function openPlayer(titre, src) {
       document.getElementById("playerTitle").textContent = titre;
-      document.getElementById("playerVideo").src = src;
+      const v = document.getElementById("playerVideo");
+      v.querySelector('source')?.setAttribute('src', src);
+      v.load();
       document.getElementById("playerModal").classList.remove("hidden");
     }
 
     function closePlayer() {
       const video = document.getElementById("playerVideo");
       video.pause();
-      video.src = "";
+      // clear source(s)
+      const srcEl = video.querySelector('source');
+      if (srcEl) srcEl.setAttribute('src', '');
+      video.load();
       document.getElementById("playerModal").classList.add("hidden");
     }
-// Modale BFMTV
-    function toggleMenu() {
-      const menu = document.getElementById("mobileMenu");
-      menu.classList.toggle("hidden");
-    }
 
+    // BFMTV modale
     function openBFMTV(titre, src) {
       document.getElementById("playerTitle").textContent = titre;
-      document.getElementById("playerVideo").src = src;
-      document.getElementById("playerModal").classList.remove("hidden");
+      const v = document.getElementById("bfmtvVideo");
+      v.querySelector('source')?.setAttribute('src', src);
+      v.load();
+      document.getElementById("bfmtvModal").classList.remove("hidden");
     }
 
     function closeBFMTV() {
-      const video = document.getElementById("playerVideo");
+      const video = document.getElementById("bfmtvVideo");
       video.pause();
-      video.src = "https://iptv-org.github.io/channels/fr/BFMTV";
-      document.getElementById("playerModal").classList.add("hidden");
+      const srcEl = video.querySelector('source');
+      if (srcEl) srcEl.setAttribute('src', '');
+      video.load();
+      document.getElementById("bfmtvModal").classList.add("hidden");
     }
 
-    // Fonctions pour la modale Novo19
+    // Novo19 (iframe)
     function openNovo19() {
       document.getElementById("novo19Modal").classList.remove("hidden");
     }
-
     function closeNovo19() {
       document.getElementById("novo19Modal").classList.add("hidden");
     }
-    
-    	// Fonctions pour la modale T18
+
+    // T18 (iframe)
     function openT18() {
       document.getElementById("t18Modal").classList.remove("hidden");
     }
-
     function closeT18() {
       document.getElementById("t18Modal").classList.add("hidden");
+    }
+
+    // France 24 (sans iframe) - lecture HLS via hls.js si nécessaire
+    // Remarque: remplacez france24Src par l'URL HLS exacte que vous souhaitez utiliser si besoin.
+    const france24Src = "https://static.france24.com/live/F24_FR_LO_HLS/live_web.m3u8";
+    let _france24Hls = null;
+
+    function openFrance24() {
+      const video = document.getElementById("france24Video");
+
+      // Si hls.js est supporté, on l'utilise pour attacher le HLS au <video>
+      if (window.Hls && Hls.isSupported()) {
+        // destroy previous instance si existante
+        if (_france24Hls) {
+          try { _france24Hls.destroy(); } catch (e) {}
+          _france24Hls = null;
         }
+        _france24Hls = new Hls();
+        _france24Hls.loadSource(france24Src);
+        _france24Hls.attachMedia(video);
+        _france24Hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          video.play().catch(()=>{ /* autoplay bloqué */ });
+        });
+      } else {
+        // navigateurs qui supportent HLS nativement (Safari)
+        video.src = france24Src;
+        video.addEventListener('loadedmetadata', function tryPlay() {
+          video.removeEventListener('loadedmetadata', tryPlay);
+          video.play().catch(()=>{ /* autoplay bloqué */ });
+        });
+      }
+
+      document.getElementById("france24Modal").classList.remove("hidden");
+    }
+
+    function closeFrance24() {
+      const video = document.getElementById("france24Video");
+      // Stop HLS instance si présente
+      if (_france24Hls) {
+        try { _france24Hls.destroy(); } catch (e) {}
+        _france24Hls = null;
+      }
+      // Pause et vider la source
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      document.getElementById("france24Modal").classList.add("hidden");
+    }
   </script>
 </body>
-      </html>
+  </html>
