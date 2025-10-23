@@ -66,8 +66,7 @@
         </div>
       </div>
 
-      <!--
-      <!-- Carte émission Novo19 (avec iframe pour la chaîne TV) -->
+      <!-- Carte Novo19 -->
       <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openNovo19()">
         <img src="img/channels/novo19.jpeg" alt="Logo Novo19" class="w-full h-40 object-cover" />
         <div class="p-4">
@@ -75,19 +74,15 @@
           <p class="text-sm text-gray-400">En Direct - Novo19 | Inconnu - Inconnu | Inconnu </p>
         </div>
       </div>
-      
-      <!-- Ajouter d'autres cartes ici -->
-      
-      <!-- Carte émission T18 (avec iframe pour la chaîne TV) -->
+
+      <!-- Carte T18 -->
       <div class="bg-[#1a1a1a] rounded-xl overflow-hidden shadow hover:scale-[1.01] transition cursor-pointer" onclick="openT18()">
         <img src="img/channels/t18.jpeg" alt="Logo T18" class="w-full h-40 object-cover" />
         <div class="p-4">
           <h2 class="text-xl font-semibold">Donnée EPG inconnue</h2>
           <p class="text-sm text-gray-400">En Direct - T18 | Inconnu - Inconnu | Inconnu </p>
         </div>
-      </div> 
-      
-      <!-- ... -->
+      </div>
 
     </div>
   </section>
@@ -103,7 +98,7 @@
     </div>
   </div>
 
-  <!-- Player modal (pour les vidéos MP4) -->
+  <!-- Player modal BFMTV -->
   <div id="bfmtvModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closeBFMTV()" class="absolute top-2 right-4 text-white text-2xl">×</button>
@@ -114,7 +109,7 @@
     </div>
   </div>
 
-  <!-- Player modal spécifique pour Novo19 (iframe) -->
+  <!-- Novo19 modal (iframe) -->
   <div id="novo19Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closeNovo19()" class="absolute top-2 right-4 text-white text-2xl">×</button>
@@ -125,7 +120,7 @@
     </div>
   </div>
 
-  <!-- Player modal spécifique pour T18 (iframe) -->
+  <!-- T18 modal (iframe) -->
   <div id="t18Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
       <button onclick="closeT18()" class="absolute top-2 right-4 text-white text-2xl">×</button>
@@ -136,21 +131,34 @@
     </div>
   </div>
 
-  <!-- Player modal spécifique pour France 24 (sans iframe, HLS via hls.js) -->
+  <!-- France24 modal (video player, no iframe) -->
   <div id="france24Modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50">
     <div class="max-w-3xl w-full bg-[#111] rounded-lg p-6 relative">
-      <button onclick="closeFrance24()" class="absolute top-2 right-4 text-white text-2xl">×</button>
-      <h2 id="france24Title" class="text-xl font-bold mb-4">France 24 - En direct</h2>
+      <button onclick="France24Player.close()" class="absolute top-2 right-4 text-white text-2xl">×</button>
+      <h2 class="text-xl font-bold mb-4">France 24 - En direct</h2>
+
       <div class="w-full aspect-video">
+        <!-- video element used by the france24 player JS -->
         <video id="france24Video" controls class="w-full h-96 rounded bg-black"></video>
       </div>
+
+      <div class="mt-4 text-center">
+        <p id="france24Status" class="text-sm text-gray-400">Si le flux ne se charge pas, tu peux ouvrir France24 directement :</p>
+        <div class="mt-2 flex justify-center gap-2">
+          <a id="france24OpenExternal" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white text-sm" target="_blank" rel="noopener noreferrer" href="https://www.france24.com/fr/direct">Ouvrir France24 (site)</a>
+          <button onclick="France24Player.close()" class="px-4 py-2 rounded border border-gray-700 text-sm">x</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- hls.js pour lire les flux HLS dans les navigateurs non compatibles -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- France24 player JS (external file expected at js/france24-player.js) -->
+  <!-- si tu préfères je peux inline ce JS — ici on suppose que tu places js/france24-player.js à la racine 'js/' -->
+  <script src="js/france24-player.js"></script>
 
   <script>
+    // Basic UI functions + integration glue to France24Player
     function toggleMenu() {
       const menu = document.getElementById("mobileMenu");
       menu.classList.toggle("hidden");
@@ -159,7 +167,8 @@
     function openPlayer(titre, src) {
       document.getElementById("playerTitle").textContent = titre;
       const v = document.getElementById("playerVideo");
-      v.querySelector('source')?.setAttribute('src', src);
+      const s = v.querySelector('source');
+      if (s) s.setAttribute('src', src);
       v.load();
       document.getElementById("playerModal").classList.remove("hidden");
     }
@@ -167,18 +176,17 @@
     function closePlayer() {
       const video = document.getElementById("playerVideo");
       video.pause();
-      // clear source(s)
       const srcEl = video.querySelector('source');
       if (srcEl) srcEl.setAttribute('src', '');
       video.load();
       document.getElementById("playerModal").classList.add("hidden");
     }
 
-    // BFMTV modale
     function openBFMTV(titre, src) {
       document.getElementById("playerTitle").textContent = titre;
       const v = document.getElementById("bfmtvVideo");
-      v.querySelector('source')?.setAttribute('src', src);
+      const s = v.querySelector('source');
+      if (s) s.setAttribute('src', src);
       v.load();
       document.getElementById("bfmtvModal").classList.remove("hidden");
     }
@@ -192,15 +200,13 @@
       document.getElementById("bfmtvModal").classList.add("hidden");
     }
 
-    // Novo19 (iframe)
+    // Novo19 / T18 modals (iframe based)
     function openNovo19() {
       document.getElementById("novo19Modal").classList.remove("hidden");
     }
     function closeNovo19() {
       document.getElementById("novo19Modal").classList.add("hidden");
     }
-
-    // T18 (iframe)
     function openT18() {
       document.getElementById("t18Modal").classList.remove("hidden");
     }
@@ -208,52 +214,47 @@
       document.getElementById("t18Modal").classList.add("hidden");
     }
 
-    // France 24 (sans iframe) - lecture HLS via hls.js si nécessaire
-    // Remarque: remplacez france24Src par l'URL HLS exacte que vous souhaitez utiliser si besoin.
-    const france24Src = "https://static.france24.com/live/F24_FR_LO_HLS/live_web.m3u8";
-    let _france24Hls = null;
-
-    function openFrance24() {
-      const video = document.getElementById("france24Video");
-
-      // Si hls.js est supporté, on l'utilise pour attacher le HLS au <video>
-      if (window.Hls && Hls.isSupported()) {
-        // destroy previous instance si existante
-        if (_france24Hls) {
-          try { _france24Hls.destroy(); } catch (e) {}
-          _france24Hls = null;
-        }
-        _france24Hls = new Hls();
-        _france24Hls.loadSource(france24Src);
-        _france24Hls.attachMedia(video);
-        _france24Hls.on(Hls.Events.MANIFEST_PARSED, function() {
-          video.play().catch(()=>{ /* autoplay bloqué */ });
+    // France24 integration: init France24Player with sensible defaults for mobile (muted autoplay)
+    document.addEventListener('DOMContentLoaded', function(){
+      // init player; change src if you have another HLS URL
+      if (window.France24Player) {
+        France24Player.init({
+          videoId: 'france24Video',
+          modalId: 'france24Modal',
+          // flux HLS public (peut être bloqué par CORS ou par le fournisseur)
+          src: 'https://static.france24.com/live/F24_FR_LO_HLS/live_web.m3u8',
+          autoplayMuted: true,     // recommandé sur Chrome Android pour autoriser autoplay
+          maxRetries: 3,
+          xhrTimeout: 15000
         });
       } else {
-        // navigateurs qui supportent HLS nativement (Safari)
-        video.src = france24Src;
-        video.addEventListener('loadedmetadata', function tryPlay() {
-          video.removeEventListener('loadedmetadata', tryPlay);
-          video.play().catch(()=>{ /* autoplay bloqué */ });
-        });
+        console.warn('France24Player script non chargé — place js/france24-player.js dans le dossier js/ ou inline le code.');
       }
+    });
 
-      document.getElementById("france24Modal").classList.remove("hidden");
-    }
-
-    function closeFrance24() {
-      const video = document.getElementById("france24Video");
-      // Stop HLS instance si présente
-      if (_france24Hls) {
-        try { _france24Hls.destroy(); } catch (e) {}
-        _france24Hls = null;
+    // helper wrapper used by the card
+    function openFrance24() {
+      // update external open link to match the configured stream page
+      const external = document.getElementById('france24OpenExternal');
+      if (external) external.href = 'https://www.france24.com/fr/direct';
+      if (window.France24Player) {
+        France24Player.open();
+      } else {
+        // fallback: open external site if the player lib is missing
+        window.open('https://www.france24.com/fr/direct', '_blank');
       }
-      // Pause et vider la source
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-      document.getElementById("france24Modal").classList.add("hidden");
     }
   </script>
+
+  <!-- Small note for debugging on Chrome Android -->
+  <script>
+    // show console hints in page for non-developers (optional)
+    (function(){
+      if (/Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent)) {
+        console.log('[Info] Chrome Android détecté — la vidéo peut nécessiter d\'être muette pour autoplay.');
+      }
+    })();
+  </script>
+
 </body>
-  </html>
+          </html>
