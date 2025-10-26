@@ -6,3 +6,7 @@
 **Mettre les replays france.tv** 🟪
 
 **Mettre TF1 en direct** 🟦
+
+**Mettre France 24 sans iFrame pour après faire avec les autres chaînes** 🟪
+
+**Mettre Big Buck Bunny dans les VOD** 🟧
