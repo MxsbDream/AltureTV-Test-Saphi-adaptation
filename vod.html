@@ -39,7 +39,23 @@
     <h1 class="text-3xl font-bold mb-6">🎬 Vidéos à la demande (VOD) </h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      
+      <!-- Big Buck Bunny vertical card -->
+      <div class="flex justify-center">
+        <button
+          class="group bg-[#0b0b0b] hover:bg-[#151515] rounded-lg shadow-md overflow-hidden flex flex-col items-center gap-3 p-3 md:w-48 w-44 h-80 focus:outline-none"
+          aria-label="Lancer Big Buck Bunny"
+          onclick="openVOD('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4','Big Buck Bunny','https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Big_Buck_Bunny_Teaser_Poster.jpg/640px-Big_Buck_Bunny_Teaser_Poster.jpg')"
+        >
+          <!-- Vertical rectangle with logo/poster -->
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Big_Buck_Bunny_Teaser_Poster.jpg/640px-Big_Buck_Bunny_Teaser_Poster.jpg"
+               alt="Big Buck Bunny poster"
+               class="object-cover w-full h-56 rounded-md border border-transparent group-hover:border-blue-400 transition" />
+          <div class="flex flex-col items-center text-center">
+            <h2 class="text-sm font-semibold">Big Buck Bunny</h2>
+            <p class="text-xs text-gray-300 mt-1">Cliquer pour lancer le film</p>
+          </div>
+        </button>
+      </div>
 
       <!-- Vous pouvez ajouter d'autres VOD ici -->
       <!-- ... -->
@@ -79,6 +95,19 @@
     </div>
   </div>
 
+  <!-- VOD Player Modal -->
+  <div id="vodPlayerModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="relative bg-[#0b0b0b] rounded-lg max-w-4xl w-full mx-4 md:mx-0">
+      <button aria-label="Fermer" onclick="closeVOD()" class="absolute right-3 top-3 text-white text-2xl z-30">×</button>
+      <div class="pt-[56.25%] relative"> <!-- 16:9 container -->
+        <video id="vodPlayer" class="absolute inset-0 w-full h-full object-contain bg-black" controls playsinline></video>
+      </div>
+      <div class="p-4 border-t border-[#222]">
+        <div id="vodTitle" class="text-lg font-semibold">Titre</div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Affiche/masque le menu des applications
     function toggleAppsMenu() {
@@ -89,7 +118,47 @@
     document.getElementById('appsMenu').addEventListener('click', function(e) {
       if(e.target === this) toggleAppsMenu();
     });
+
+    // VOD player logic
+    const vodModal = document.getElementById('vodPlayerModal');
+    const vodPlayer = document.getElementById('vodPlayer');
+    const vodTitle = document.getElementById('vodTitle');
+
+    function openVOD(src, title, poster) {
+      vodTitle.textContent = title || 'Lecture';
+      vodPlayer.poster = poster || '';
+      vodPlayer.src = src;
+      vodPlayer.currentTime = 0;
+      vodModal.classList.remove('hidden');
+      // Try to play; some browsers require user interaction (click already happened)
+      vodPlayer.play().catch(() => {
+        // play may fail silently; controls are available for user to start
+      });
+      // prevent page from scrolling while modal open
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVOD() {
+      vodPlayer.pause();
+      vodPlayer.removeAttribute('src'); // force unload
+      vodPlayer.load();
+      vodModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Close modal on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !vodModal.classList.contains('hidden')) {
+        closeVOD();
+      }
+    });
+
+    // Close if clicking outside video container
+    vodModal.addEventListener('click', function(e) {
+      // if the click is on the backdrop (not inside the player box)
+      if (e.target === vodModal) closeVOD();
+    });
   </script>
   
 </body>
-          </html>
+        </html>
