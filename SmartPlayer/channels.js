@@ -1,6 +1,6 @@
 # Channels #
 
-# French #
+# France #
 ch1="TF1"
 ch2="France 2"
 ch3="France 3"
