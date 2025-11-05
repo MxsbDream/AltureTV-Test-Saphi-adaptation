@@ -1,0 +1,15 @@
+{
+  "id": "com.alture.alturetv",
+  "name": "AltureTV",
+  "version": "1.0.0",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "description": "AltureTV — version Saphi",
+  "icons": [
+    { "src": "icons/icon72.svg", "sizes": "72x72", "type": "image/svg+xml" },
+    { "src": "icons/icon144.svg", "sizes": "144x144", "type": "image/svg+xml" },
+    { "src": "icons/icon512.svg", "sizes": "512x512", "type": "image/svg+xml" }
+  ],
+  "permissions": [],
+  "author": "Alture"
+}
